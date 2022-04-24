@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Inertia\Inertia;
 use App\Models\Article;
 use App\Http\Requests\StoreArticleRequest;
@@ -16,9 +17,9 @@ class ArticleController extends Controller
     public function index()
     {
         $articles = Article::all();
-        
-        return Inertia::render('Articles/Index',[
-            'articles' =>$articles,
+
+        return Inertia::render('Articles/Index', [
+            'articles' => $articles,
         ]);
     }
 
@@ -29,7 +30,7 @@ class ArticleController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Articles/Create');
     }
 
     /**
@@ -40,7 +41,16 @@ class ArticleController extends Controller
      */
     public function store(StoreArticleRequest $request)
     {
-        //
+        $validated = $request->validated();
+        // dd($validated);
+        $article = Article::create([
+            'title' => $validated['title'],
+            'body' => $validated['body'],
+            'user_id' => auth()->id(),
+        ]);
+
+
+        return redirect()->route('articles.show', $article);
     }
 
     /**
@@ -51,7 +61,9 @@ class ArticleController extends Controller
      */
     public function show(Article $article)
     {
-        //
+        return Inertia::render('Articles/Show', [
+            'article' => $article
+        ]);
     }
 
     /**
